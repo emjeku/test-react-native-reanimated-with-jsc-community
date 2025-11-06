@@ -10,6 +10,11 @@ import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 
+import io.github.reactnativecommunity.javascriptcore.JSCExecutorFactory
+import io.github.reactnativecommunity.javascriptcore.JSCRuntimeFactory
+import com.facebook.react.bridge.JavaScriptExecutorFactory
+import com.facebook.react.modules.systeminfo.AndroidInfoHelpers
+
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost =
@@ -26,10 +31,13 @@ class MainApplication : Application(), ReactApplication {
 
         override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
         override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
+
+        override fun getJavaScriptExecutorFactory(): JavaScriptExecutorFactory =
+          JSCExecutorFactory(packageName, AndroidInfoHelpers.getFriendlyDeviceName())
       }
 
   override val reactHost: ReactHost
-    get() = getDefaultReactHost(applicationContext, reactNativeHost)
+    get() = getDefaultReactHost(applicationContext, reactNativeHost, JSCRuntimeFactory())
 
   override fun onCreate() {
     super.onCreate()
